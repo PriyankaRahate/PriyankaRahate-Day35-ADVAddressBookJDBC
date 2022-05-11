@@ -7,10 +7,10 @@ import java.util.*;
 public class AddressBook {
     Connection connection;
 
-    private Connection getConnection() {
+    private static Connection getConnection() {
         String URL_JD = "jdbc:mysql://127.0.0.1:3306/payrollService1?useSSL=false";
         String USER_NAME = "root";
-        String PASSWORD = "Priyanka29!";
+        String PASSWORD = "Krunali29!";
         Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -21,6 +21,32 @@ public class AddressBook {
             e.printStackTrace();
         }
         return connection;
+    }
+    public static void insertData(Contacts add) throws SQLException {
+        Connection connection = getConnection();
+        try {
+            if (connection != null) {
+                connection.setAutoCommit(false);
+                Statement statement = connection.createStatement();
+                String sql = "insert into addressBook(firstname,lastname,address,city,state,zip,phoneNumber,email,bookName,contactType,date_added)" +
+                        "values('" + add.getFirstName() + "','" + add.getLastName() + "','" + add.getAddress() + "','" + add.getCity() +
+                        "','" + add.getState() + "','" + add.getZip() + "','" + add.getPhoneNumber() + "','" +
+                        add.getEmailId() + "','" + add.getBookName() + "','" + add.getContactType() + "','" + add.getDateAdded() + "');";
+                int result = statement.executeUpdate(sql);
+                connection.commit();
+                if (result > 0) {
+                    System.out.println("Contact Inserted");
+                }
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException sqlException) {
+            System.out.println("Insertion Rollbacked");
+            connection.rollback();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
 
@@ -96,16 +122,33 @@ public class AddressBook {
         }
         return addressBookList;
     }
+    public int countByCiy(String city) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "select count(firstname) from AddressBook where city=" + "'" + city + "';";
+            ResultSet result = statement.executeQuery(sql);
+            result.next();
+            int count = result.getInt(1);
 
 
-	public int countByCiy(String next) {
-		
-		return 0;
-	}
+            return count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
-
-	public int countByState(String next) {
-		
-		return 0;
-	}
+    public int countByState(String state) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "select count(firstname) from AddressBook where city=" + "'" + state + "';";
+            ResultSet result = statement.executeQuery(sql);
+            result.next();
+            int count = result.getInt(1);
+            return count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
