@@ -96,4 +96,16 @@ public class AddressBook {
         }
         return addressBookList;
     }
+
+
+	public int countByCiy(String next) {
+		
+		return 0;
+	}
+
+
+	public int countByState(String next) {
+		
+		return 0;
+	}
 }
